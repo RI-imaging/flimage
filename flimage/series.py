@@ -1,5 +1,9 @@
 import h5py
 
+import lmfit
+import numpy as np
+from skimage.restoration import denoise_tv_chambolle
+
 from .core import FLImage
 from .meta import FLMetaDict
 
@@ -157,6 +161,71 @@ class FLSeries(object):
             # set identifier
             group.attrs["identifier"] = identifier
 
+    def bleach_correction(self, h5out=None, border_px=20, flscorr=None):
+        """Perform a correction for photobleaching
+
+        Bleaching is modeled with an exponential and an offset.
+
+        Parameters
+        ----------
+        h5out: path or h5py.Group
+            A new FLSeries will be written to this HDF5 file or
+            h5py group.
+        border_px: int
+            Number of border pixels to include for background
+            estimation.
+        flscorr: FLSeries
+            Apply the background correction to this FLSeries
+            instead of the current instance. Use this in
+            combination with filtered versions of the
+            same series.
+
+        Notes
+        -----
+        It is recommended to first denoise the fluorescence data
+        with `FLSeries.denoise` do avoid an amplification of the
+        background noise.
+        """
+        if flscorr is None:
+            flscorr = self
+        # get border data
+        border = np.ones(self[0].shape, dtype=bool)
+        border[border_px:-border_px, border_px:-border_px] = False
+        bgavg = np.zeros(len(self))
+        for ii, fli in enumerate(self):
+            bgavg[ii] = np.mean(fli.fl[border])
+        bg = np.mean(bgavg)
+        # intensity values
+        flint = np.zeros(len(self))
+        for ii, fli in enumerate(self):
+            fl = fli.fl - bg
+            flint[ii] = np.sum(fl[fl > 0])
+        # time values
+        times = np.array([fli["time"] for fli in self])
+
+        # fit exponential
+        decay = fit_exponential(times, flint)
+        decay /= decay[0]
+
+        if h5out:
+            # perform bleach correction
+            with FLSeries(h5file=h5out) as fls:
+                for ii, fli in enumerate(flscorr):
+                    fld = (fli.fl - bg) / decay[ii]
+                    fln = FLImage(data=fld, meta_data=fli.meta)
+                    fls.add_flimage(fln)
+
+    def denoise(self, h5file):
+        """Denoise fluorescence data
+
+        `h5file` specifies a path or HDF5 group for the FLSeries
+        to which the denoised fluorescence data is written."""
+        with FLSeries(h5file=h5file) as fls:
+            for fli in self:
+                fldn = denoise_tv_chambolle(fli.fl, weight=2)
+                fln = FLImage(data=fldn, meta_data=fli.meta)
+                fls.add_flimage(fln)
+
     def get_flimage(self, index):
         """Return a single FLImage of the series
 
@@ -196,3 +265,26 @@ class FLSeries(object):
                     index, len(self))
                 raise KeyError(msg)
         return FLImage(h5file=group)
+
+
+def fit_exponential(times, flint):
+    def model_fct(params, t):
+        ampl = params["amplitude"].value
+        decay = params["bleach_decay"].value
+        offset = params["offset"].value
+        model = ampl*np.exp(-decay*t) + offset
+        return model
+
+    def residual(params, t, data):
+        return model_fct(params, t)-data
+
+    params = lmfit.Parameters()
+    params.add("amplitude", value=flint.max()-flint.min())
+    params.add("bleach_decay", value=(times.max()-times.min()))
+    params.add("offset", value=flint.min())
+
+    out = lmfit.minimize(residual, params, args=(times, flint))
+
+    model = model_fct(out.params, times)
+
+    return model
