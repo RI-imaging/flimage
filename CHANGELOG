@@ -1,4 +1,4 @@
 0.2.0
- - feat: bleach correction of FLSeries
+ - feat: bleach correction and denoising of FLSeries
 0.1.0
  - initial working state

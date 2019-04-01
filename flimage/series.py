@@ -161,7 +161,8 @@ class FLSeries(object):
             # set identifier
             group.attrs["identifier"] = identifier
 
-    def bleach_correction(self, h5out=None, border_px=20, flscorr=None):
+    def bleach_correction(self, h5out=None, border_px=20, flscorr=None,
+                          count=None, max_count=None):
         """Perform a correction for photobleaching
 
         Bleaching is modeled with an exponential and an offset.
@@ -180,12 +181,22 @@ class FLSeries(object):
             combination with filtered versions of the
             same series.
 
+        Returns
+        -------
+        bg: float
+            Background value subtracted from each image
+        corr: 1d ndarray
+            Bleach correction factors for each image with
+            `corr[0]` being equal to 1
+
         Notes
         -----
         It is recommended to first denoise the fluorescence data
         with `FLSeries.denoise` do avoid an amplification of the
         background noise.
         """
+        if max_count is not None:
+            max_count.value += 3*len(self)
         if flscorr is None:
             flscorr = self
         # get border data
@@ -194,37 +205,48 @@ class FLSeries(object):
         bgavg = np.zeros(len(self))
         for ii, fli in enumerate(self):
             bgavg[ii] = np.mean(fli.fl[border])
+            if count is not None:
+                count.value += 1
         bg = np.mean(bgavg)
         # intensity values
         flint = np.zeros(len(self))
         for ii, fli in enumerate(self):
             fl = fli.fl - bg
             flint[ii] = np.sum(fl[fl > 0])
+            if count is not None:
+                count.value += 1
         # time values
         times = np.array([fli["time"] for fli in self])
 
         # fit exponential
         decay = fit_exponential(times, flint)
-        decay /= decay[0]
+        corr = decay[0] / decay
 
         if h5out:
             # perform bleach correction
             with FLSeries(h5file=h5out) as fls:
                 for ii, fli in enumerate(flscorr):
-                    fld = (fli.fl - bg) / decay[ii]
+                    fld = (fli.fl - bg) * corr[ii]
                     fln = FLImage(data=fld, meta_data=fli.meta)
                     fls.add_flimage(fln)
+                    if count is not None:
+                        count.value += 1
+        return bg, corr
 
-    def denoise(self, h5file):
+    def denoise(self, h5file, count=None, max_count=None):
         """Denoise fluorescence data
 
         `h5file` specifies a path or HDF5 group for the FLSeries
         to which the denoised fluorescence data is written."""
+        if max_count is not None:
+            max_count.value += len(self)
         with FLSeries(h5file=h5file) as fls:
             for fli in self:
                 fldn = denoise_tv_chambolle(fli.fl, weight=2)
                 fln = FLImage(data=fldn, meta_data=fli.meta)
                 fls.add_flimage(fln)
+                if count is not None:
+                    count.value += 1
 
     def get_flimage(self, index):
         """Return a single FLImage of the series
@@ -279,9 +301,16 @@ def fit_exponential(times, flint):
         return model_fct(params, t)-data
 
     params = lmfit.Parameters()
-    params.add("amplitude", value=flint.max()-flint.min(), min=1e-8, max=flint.max())
-    params.add("bleach_decay", value=(times.max()-times.min()), min=1e-8, max=times.max())
-    params.add("offset", value=flint.min())
+    params.add("amplitude",
+               value=flint.max()-flint.min(),
+               min=1e-8,
+               max=flint.max())
+    params.add("bleach_decay",
+               value=(times.max()-times.min()),
+               min=1e-8,
+               max=times.max())
+    params.add("offset",
+               value=flint.min())
     out = lmfit.minimize(residual, params, args=(times, flint))
 
     model = model_fct(out.params, times)
