@@ -279,10 +279,9 @@ def fit_exponential(times, flint):
         return model_fct(params, t)-data
 
     params = lmfit.Parameters()
-    params.add("amplitude", value=flint.max()-flint.min())
-    params.add("bleach_decay", value=(times.max()-times.min()))
+    params.add("amplitude", value=flint.max()-flint.min(), min=1e-8, max=flint.max())
+    params.add("bleach_decay", value=(times.max()-times.min()), min=1e-8, max=times.max())
     params.add("offset", value=flint.min())
-
     out = lmfit.minimize(residual, params, args=(times, flint))
 
     model = model_fct(out.params, times)
