@@ -231,6 +231,7 @@ class FLSeries(object):
                     fls.add_flimage(fln)
                     if count is not None:
                         count.value += 1
+
         return bg, corr
 
     def denoise(self, h5file, count=None, max_count=None):
@@ -303,14 +304,13 @@ def fit_exponential(times, flint):
     params = lmfit.Parameters()
     params.add("amplitude",
                value=flint.max()-flint.min(),
-               min=1e-8,
-               max=flint.max())
+               min=flint.min(),
+               max=2*flint.max())
     params.add("bleach_decay",
                value=(times.max()-times.min()),
-               min=1e-8,
-               max=times.max())
+               min=1e-8)
     params.add("offset",
-               value=flint.min())
+               value=flint.min() / 2)
     out = lmfit.minimize(residual, params, args=(times, flint))
 
     model = model_fct(out.params, times)
