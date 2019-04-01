@@ -185,9 +185,13 @@ class FLSeries(object):
         -------
         bg: float
             Background value subtracted from each image
-        corr: 1d ndarray
-            Bleach correction factors for each image with
-            `corr[0]` being equal to 1
+        flint: 1d ndarray
+            Fluorescence intensity trace extracted from the series
+        decay: 1d ndarray
+            Exponential fit to `flint`
+        times: 1d ndarray
+            Recording times corresponding to the indices in
+            `flint` and `decay`
 
         Notes
         -----
@@ -232,7 +236,7 @@ class FLSeries(object):
                     if count is not None:
                         count.value += 1
 
-        return bg, corr
+        return bg, flint, decay, times
 
     def denoise(self, h5file, count=None, max_count=None):
         """Denoise fluorescence data
@@ -306,11 +310,15 @@ def fit_exponential(times, flint):
                value=flint.max()-flint.min(),
                min=flint.min(),
                max=2*flint.max())
+    dt = times[-1] - times[0]
+    df = flint[-1] - flint[0]
     params.add("bleach_decay",
-               value=(times.max()-times.min()),
-               min=1e-8)
+               value=-dt/df*flint[0]/20,
+               min=0,
+               brute_step=dt/20)
     params.add("offset",
-               value=flint.min() / 2)
+               value=flint.min(),
+               min=0)
     out = lmfit.minimize(residual, params, args=(times, flint))
 
     model = model_fct(out.params, times)
