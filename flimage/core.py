@@ -120,10 +120,9 @@ class FLImage(object):
         """
         if isinstance(given, (slice, tuple)):
             # return new QPImage
-            qpi = FLImage(data=self.raw_fl[given],
-                          bg_data=self.bg_fl[given],
+            fli = FLImage(data=self.raw_fl[given],
                           meta_data=self.meta)
-            return qpi
+            return fli
         elif isinstance(given, str):
             # return meta data
             return self.meta[given]
@@ -226,7 +225,7 @@ class FLImage(object):
             # Reset phase and amplitude
             fl = None
         else:
-            # Compute phase and amplitude from data and which_data
+            # Compute phase and amplitude from bg_data
             fl = bg_data
         # Set background data
         self._fl.set_bg(fl, key="data")

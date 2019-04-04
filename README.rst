@@ -1,17 +1,20 @@
-qpimage
+flimage
 =======
 
 |PyPI Version| |Tests Status| |Coverage Status| |Docs Status|
 
 
-**qpimage** is a Python3 library for manipulating quantitative phase images.
+**flimage** is a Python3 library for handling fluorescence data.
+Its API is (as much as it makes sense) identical to that of
+`qpimage <https://flimage.readthedocs.io/en/stable/>`__, making
+it a convenient tool for phase- and fluorescence colocalization.
 
 
 Documentation
 -------------
 
 The documentation, including the code reference and examples, is available at
-`qpimage.readthedocs.io <https://qpimage.readthedocs.io/en/stable/>`__.
+`flimage.readthedocs.io <https://flimage.readthedocs.io/en/stable/>`__.
 
 
 Installation
@@ -19,7 +22,7 @@ Installation
 
 ::
 
-    pip install qpimage
+    pip install flimage
 
 
 Testing
@@ -31,12 +34,12 @@ Testing
     python setup.py test
     
 
-.. |PyPI Version| image:: https://img.shields.io/pypi/v/qpimage.svg
-   :target: https://pypi.python.org/pypi/qpimage
-.. |Tests Status| image:: https://img.shields.io/travis/RI-imaging/qpimage.svg?label=tests
-   :target: https://travis-ci.org/RI-imaging/qpimage
-.. |Coverage Status| image:: https://img.shields.io/codecov/c/github/RI-imaging/qpimage/master.svg
-   :target: https://codecov.io/gh/RI-imaging/qpimage
-.. |Docs Status| image:: https://readthedocs.org/projects/qpimage/badge/?version=latest
-   :target: https://readthedocs.org/projects/qpimage/builds/
+.. |PyPI Version| image:: https://img.shields.io/pypi/v/flimage.svg
+   :target: https://pypi.python.org/pypi/flimage
+.. |Tests Status| image:: https://img.shields.io/travis/RI-imaging/flimage.svg?label=tests
+   :target: https://travis-ci.org/RI-imaging/flimage
+.. |Coverage Status| image:: https://img.shields.io/codecov/c/github/RI-imaging/flimage/master.svg
+   :target: https://codecov.io/gh/RI-imaging/flimage
+.. |Docs Status| image:: https://readthedocs.org/projects/flimage/badge/?version=latest
+   :target: https://readthedocs.org/projects/flimage/builds/
 
