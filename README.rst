@@ -5,8 +5,8 @@ flimage
 
 
 **flimage** is a Python3 library for handling fluorescence data.
-Its API is (as much as it makes sense) identical to that of
-`qpimage <https://flimage.readthedocs.io/en/stable/>`__, making
+Its API is (as much as it makes sense) is identical to that of
+`qpimage <https://qpimage.readthedocs.io/en/stable/>`__, making
 it a convenient tool for phase- and fluorescence colocalization.
 
 
