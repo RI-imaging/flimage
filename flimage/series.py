@@ -175,7 +175,7 @@ class FLSeries(object):
         border_px: int
             Number of border pixels to include for background
             estimation.
-        flscorr: FLSeries
+        flscorr: flimage.series.FLSeries
             Apply the background correction to this FLSeries
             instead of the current instance. Use this in
             combination with filtered versions of the

@@ -1,6 +1,7 @@
 0.3.0
  - ref: renamed `meta.DATA_KEYS` to `meta.DATA_KEYS_FL` and removed
-   "wavelength" key
+   keys that are not relevant for fluorescence imaging
+ - docs: initial documentation with code reference
 0.2.1
  - maintenance release
 0.2.0
