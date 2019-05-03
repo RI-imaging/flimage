@@ -1,3 +1,6 @@
+0.3.0
+ - ref: renamed `meta.DATA_KEYS` to `meta.DATA_KEYS_FL` and removed
+   "wavelength" key
 0.2.1
  - maintenance release
 0.2.0

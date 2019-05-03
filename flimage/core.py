@@ -5,7 +5,7 @@ import numpy as np
 import qpimage
 
 from .image_data import Fluorescence
-from .meta import FLMetaDict, DATA_KEYS, META_KEYS_FL
+from .meta import FLMetaDict, DATA_KEYS_FL, META_KEYS_FL
 from ._version import version as __version__
 
 
@@ -92,8 +92,8 @@ class FLImage(object):
         return self
 
     def __eq__(self, other):
-        datame = [self.meta[k] for k in self.meta if k in DATA_KEYS]
-        dataot = [other.meta[k] for k in other.meta if k in DATA_KEYS]
+        datame = [self.meta[k] for k in self.meta if k in DATA_KEYS_FL]
+        dataot = [other.meta[k] for k in other.meta if k in DATA_KEYS_FL]
 
         if (isinstance(other, FLImage) and
             self.shape == other.shape and
