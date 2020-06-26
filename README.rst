@@ -37,7 +37,7 @@ Testing
 .. |PyPI Version| image:: https://img.shields.io/pypi/v/flimage.svg
    :target: https://pypi.python.org/pypi/flimage
 .. |Tests Status| image:: https://img.shields.io/travis/RI-imaging/flimage.svg?label=tests
-   :target: https://travis-ci.org/RI-imaging/flimage
+   :target: https://travis-ci.com/RI-imaging/flimage
 .. |Coverage Status| image:: https://img.shields.io/codecov/c/github/RI-imaging/flimage/master.svg
    :target: https://codecov.io/gh/RI-imaging/flimage
 .. |Docs Status| image:: https://readthedocs.org/projects/flimage/badge/?version=latest
