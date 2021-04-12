@@ -9,7 +9,7 @@ Table output of flimage.meta.DATA_DEF
    .. flimage_meta_table:: data
 
 Table output of flimage.meta.OTHER_DEF
-   
+
    .. flimage_meta_table:: other
 """
 from docutils.statemachine import ViewList
@@ -44,7 +44,7 @@ class MetaTable(Base):
 
     def generate_rst(self):
         which = self.arguments[0]
-        if which== "data":
+        if which == "data":
             ddict = meta.DATA_DEF_FL
         elif which == "other":
             ddict = meta.OTHER_DEF_FL
