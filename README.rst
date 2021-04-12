@@ -31,13 +31,14 @@ Testing
 ::
 
     pip install -e .
-    python setup.py test
+    pip install pytest
+    pytest tests
     
 
 .. |PyPI Version| image:: https://img.shields.io/pypi/v/flimage.svg
    :target: https://pypi.python.org/pypi/flimage
-.. |Tests Status| image:: https://img.shields.io/travis/RI-imaging/flimage.svg?label=tests
-   :target: https://travis-ci.com/RI-imaging/flimage
+.. |Tests Status| image:: https://img.shields.io/github/workflow/status/RI-Imaging/flimage/Checks
+   :target: https://github.com/RI-Imaging/flimage/actions?query=workflow%3AChecks
 .. |Coverage Status| image:: https://img.shields.io/codecov/c/github/RI-imaging/flimage/master.svg
    :target: https://codecov.io/gh/RI-imaging/flimage
 .. |Docs Status| image:: https://readthedocs.org/projects/flimage/badge/?version=latest

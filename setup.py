@@ -10,7 +10,7 @@ name = 'flimage'
 year = "2019"
 
 sys.path.insert(0, realpath(dirname(__file__))+"/"+name)
-from _version import version
+from _version import version  # noqa: E402
 
 setup(
     name=name,
@@ -29,13 +29,11 @@ setup(
                       "qpimage>=0.5.1",
                       "scikit-image>=0.11.0",
                       ],
-    setup_requires=['pytest-runner'],
-    tests_require=["pytest"],
     python_requires='>=3.6, <4',
     keywords=["fluorescence microscopy",
               "bleach correction",
               ],
-    classifiers= [
+    classifiers=[
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3',
         'Intended Audience :: Science/Research'

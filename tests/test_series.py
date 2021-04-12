@@ -126,7 +126,7 @@ def test_series_meta():
         flimage.FLImage(h5file=h5file,
                         meta_data={"pixel size": 0.054e-6},
                         h5mode="r")
-    except OSError:
+    except (OSError, RuntimeError):
         # no write intent on file
         pass
     else:
