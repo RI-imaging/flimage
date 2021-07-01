@@ -1,3 +1,5 @@
+0.3.2
+ - fix: easy fix for regression in h5py with backing_store=False
 0.3.1
  - tests: fix HDF5-related issue
  - build: setup.py test is deprecated
