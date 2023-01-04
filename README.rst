@@ -37,7 +37,7 @@ Testing
 
 .. |PyPI Version| image:: https://img.shields.io/pypi/v/flimage.svg
    :target: https://pypi.python.org/pypi/flimage
-.. |Tests Status| image:: https://img.shields.io/github/workflow/status/RI-Imaging/flimage/Checks
+.. |Tests Status| image:: https://img.shields.io/github/actions/workflow/status/RI-Imaging/flimage/check.yml
    :target: https://github.com/RI-Imaging/flimage/actions?query=workflow%3AChecks
 .. |Coverage Status| image:: https://img.shields.io/codecov/c/github/RI-imaging/flimage/master.svg
    :target: https://codecov.io/gh/RI-imaging/flimage
